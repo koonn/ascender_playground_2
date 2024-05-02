@@ -32,6 +32,10 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTH
     && python3 -m pip install --upgrade pip setuptools requests \
     && python3 -m pip install poetry
 
+## Enable to use ipykernel
+USER root
+RUN apt update && apt install --no-install-recommends -y gcc python3-dev
+
 # Add user. Without this, following process is executed as admin.
 RUN groupadd -g ${GID} ${GROUP_NAME} \
     && useradd -ms /bin/sh -u ${UID} -g ${GID} ${USER_NAME}

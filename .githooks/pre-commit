@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# developへのコミットを禁止する
+if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then
+  echo "You cannot directly commit to the develop branch."
+  exit 1
+fi
