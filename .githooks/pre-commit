@@ -1,7 +1,37 @@
 #!/bin/sh
 
-# developへのコミットを禁止する
-if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then
-  echo "You cannot directly commit to the develop branch."
+# 現在のブランチを取得
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# developブランチへのコミットを禁止
+if [ "$current_branch" = "develop" ]; then
+  echo "You are on the develop branch. Commits are not allowed on this branch."
   exit 1
 fi
+
+# 自動フォーマット
+echo "Auto formatting with ruff..."
+make ruff-format
+
+# ruffでlintとformatチェックを実行して、失敗した場合はコミットを禁止
+echo "Checking code formatting and lint with ruff..."
+# ruffを実行
+make lint
+# 終了ステータスをチェック
+if [ $? -ne 0 ]; then
+  echo "Lint check failed. Commit aborted."
+  exit 1
+fi
+
+# pytestを実行して、テストが失敗した場合はコミットを禁止
+echo "Running pytest..."
+# pytestを実行
+make test
+# pytest # pytestを直接実行する場合
+# pytestの終了ステータスをチェック
+if [ $? -ne 0 ]; then
+  echo "Tests failed. Commit aborted."
+  exit 1
+fi
+
+exit 0
