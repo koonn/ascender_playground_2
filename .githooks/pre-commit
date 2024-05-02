@@ -9,4 +9,14 @@ if [ "$current_branch" = "develop" ]; then
   exit 1
 fi
 
+# pytestを実行して、テストが失敗した場合はコミットを禁止
+echo "Running pytest..."
+# pytestを実行
+pytest
+# pytestの終了ステータスをチェック
+if [ $? -ne 0 ]; then
+  echo "Tests failed. Commit aborted."
+  exit 1
+fi
+
 exit 0
