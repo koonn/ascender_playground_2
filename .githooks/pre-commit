@@ -1,7 +1,12 @@
 #!/bin/sh
 
-# developへのコミットを禁止する
-if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then
-  echo "You cannot directly commit to the develop branch."
+# 現在のブランチを取得
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# developブランチへのコミットを禁止
+if [ "$current_branch" = "develop" ]; then
+  echo "You are on the develop branch. Commits are not allowed on this branch."
   exit 1
 fi
+
+exit 0
