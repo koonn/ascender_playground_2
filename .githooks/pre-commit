@@ -9,33 +9,17 @@ if [ "$current_branch" = "develop" ]; then
   exit 1
 fi
 
-# ruffでlintチェックを実行して、失敗した場合はコミットを禁止
-echo "Checking lint with ruff..."
+# 自動フォーマット
+echo "Auto formatting with ruff..."
+make ruff-format
+
+# ruffでlintとformatチェックを実行して、失敗した場合はコミットを禁止
+echo "Checking code formatting and lint with ruff..."
 # ruffを実行
-make ruff-lint-check
-# ruffの終了ステータスをチェック
+make lint
+# 終了ステータスをチェック
 if [ $? -ne 0 ]; then
   echo "Lint check failed. Commit aborted."
-  exit 1
-fi
-
-# ruffでformatチェックを実行して、失敗した場合はコミットを禁止
-echo "Checking code formatting with ruff..."
-# ruffを実行
-make format-check
-# ruffの終了ステータスをチェック
-if [ $? -ne 0 ]; then
-  echo "Code formatting check failed. Commit aborted."
-  exit 1
-fi
-
-# mypyを実行して、型チェックが失敗した場合はコミットを禁止
-echo "Checking types with mypy..."
-# mypyを実行
-make mypy
-# pytestの終了ステータスをチェック
-if [ $? -ne 0 ]; then
-  echo "Type checking failed. Commit aborted."
   exit 1
 fi
 
